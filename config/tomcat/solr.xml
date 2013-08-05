@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context docBase="%solr.home%/solr.war" reloadable="true" >
+    <Environment name="solr/home" type="java.lang.String" value="%solr.home%" override="true" />
+</Context>

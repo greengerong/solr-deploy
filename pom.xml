@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.greengerong</groupId>
+    <artifactId>solr-deploy</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>solr-deploy</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <solr.home>${project.basedir}/deploy</solr.home>
+        <tomcat.home>/Library/tomcat</tomcat.home>
+    </properties>
+
+    <build>
+    </build>
+    <profiles>
+        <profile>
+            <id>solr-deploy</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>2.5</version>
+                        <executions>
+                            <execution>
+                                <id>auto-clean</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${solr.home}</directory>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
+                                <!--<fileset>-->
+                                    <!--<directory>${tomcat.home}/catalina/localhost</directory>-->
+                                    <!--<includes>-->
+                                        <!--<include>solr.xml</include>-->
+                                    <!--</includes>-->
+                                    <!--<followSymlinks>false</followSymlinks>-->
+                                <!--</fileset>-->
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.goldin</groupId>
+                        <artifactId>copy-maven-plugin</artifactId>
+                        <version>0.2.5</version>
+                        <executions>
+                            <execution>
+                                <id>create-archive</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <targetPath>${solr.home}</targetPath>
+                                            <directory>${project.basedir}/config/solr-4.4.0/example/solr</directory>
+                                            <preservePath>true</preservePath>
+                                        </resource>
+                                        <resource>
+                                            <targetPath>${solr.home}</targetPath>
+                                            <file>${project.basedir}/config/solr-4.4.0/dist/solr-4.4.0.war</file>
+                                            <destFileName>solr.war</destFileName>
+                                        </resource>
+
+                                        <resource>
+                                            <targetPath>${tomcat.home}/conf/catalina/localhost</targetPath>
+                                            <directory>${project.basedir}/config/tomcat/</directory>
+                                            <preservePath>true</preservePath>
+                                            <replaces>
+                                                <replace>
+                                                    <from>%solr.home%</from>
+                                                    <to>${solr.home}</to>
+                                                </replace>
+                                            </replaces>
+                                        </resource>
+                                        <resource>
+                                            <targetPath>${tomcat.home}/lib</targetPath>
+                                            <directory>${project.basedir}/config/solr-4.4.0/example/lib/ext</directory>
+                                            <preservePath>true</preservePath>
+                                        </resource>
+                                        <resource>
+                                            <targetPath>${tomcat.home}/lib</targetPath>
+                                            <file>${project.basedir}/config/solr-4.4.0/example/resources/log4j.properties</file>
+                                            <preservePath>true</preservePath>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
